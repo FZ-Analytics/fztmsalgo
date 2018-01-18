@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/fztmsalgo">
+  <!--<Resource name="jdbc/fztms" auth="Container" 
+                type="javax.sql.DataSource"
+               username="sa" password="ggR654321"
+               driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+               url="jdbc:sqlserver://JSCPYGZZA1261:1433;DatabaseName=bosnet1;"
+              maxActive="50" 
+  />-->
+  <Resource name="jdbc/fztms" auth="Container" 
+                type="javax.sql.DataSource"
+               username="TMS" password="Tm$1212"
+               driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+               url="jdbc:sqlserver://10.16.1.16:1433;databaseName=BOSNET1;"
+              maxActive="50" 
+  />
+</Context>

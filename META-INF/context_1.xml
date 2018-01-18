@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/fz">
+  <Resource name="jdbc/fz" auth="Container" type="javax.sql.DataSource"
+               maxActive="50" maxIdle="30" maxWait="10000"
+               username="user1" password="Yuser12345"
+               driverClassName="com.mysql.jdbc.Driver"
+               url="jdbc:mysql://localhost:3306/fz"/>
+  <!--Resource name="jdbc/fzTms" auth="Container" type="javax.sql.DataSource"
+               maxActive="50" maxIdle="30" maxWait="10000"
+               username="bosdata" password="bosdata2016"
+               driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+               url="jdbc:sqlserver://localhost:1433;databaseName=bosnet1"/-->
+  <Resource name="jdbc/fztms" auth="Container" 
+                type="javax.sql.DataSource"
+               username="bosdata" password="bosdata2016"
+               driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+               url="jdbc:sqlserver://localhost:1433;DatabaseName=bosnet1;"
+              maxActive="50" 
+/>
+  <!--Resource name="jdbc/WallyDB" auth="Container"
+            type="javax.sql.DataSource" username="wally" password="wally"
+            driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver" 
+            url="jdbc:sqlserver://localhost;DatabaseName=mytest;SelectMethod=cursor;"
+            maxActive="8" 
+            /-->
+</Context>
