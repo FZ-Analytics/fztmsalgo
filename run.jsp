@@ -336,6 +336,10 @@
 
                     // prepare insert to db
                     ps.clearParameters();
+		    
+		    //+1 depo pulang
+		    if(j.siteID == "DEPO" && j.jobNb > 1)
+		    	j.jobNb = j.jobNb + 1;
 
                     int i = 1;
                     ps.setString(i++, j.siteID);
