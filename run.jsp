@@ -336,6 +336,10 @@
 
                     // prepare insert to db
                     ps.clearParameters();
+					
+					//+1 depo pulang
+					if(j.siteID == "DEPO" && j.jobNb > 1)
+							j.jobNb = j.jobNb + 1;
 
                     int i = 1;
                     ps.setString(i++, j.siteID);
@@ -343,7 +347,7 @@
                     ps.setString(i++, j.DONum);
                     ps.setString(i++, j.vehicleCode);
                     ps.setString(i++, j.activity);
-                    ps.setInt(i++, j.routeNb);
+                    ps.setInt(i++, j.routeNb);					
                     ps.setInt(i++, j.jobNb);
                     ps.setString(i++, j.arrive);
                     ps.setString(i++, j.depart);
@@ -608,7 +612,9 @@
                 " where\n" +
                 "	a.RunId = '"+RunId+"'\n" +
                 "	and a.branch = '"+branchCode+"'\n" +
-                "	and a.isActive = '1'";
+                "	and a.isActive = '1'\n" +
+				"	and a.IdDriver is not null\n" +
+				"	and a.NamaDriver is not null\n";
 				
 		System.out.println("sql " + sql);
 
