@@ -613,8 +613,8 @@
                 "	a.RunId = '"+RunId+"'\n" +
                 "	and a.branch = '"+branchCode+"'\n" +
                 "	and a.isActive = '1'\n" +
-				"	and a.IdDriver is not null\n" +
-				"	and a.NamaDriver is not null\n";
+		"	and a.IdDriver is not null\n" +
+		"	and a.NamaDriver is not null\n";
 				
 		System.out.println("sql " + sql);
 
