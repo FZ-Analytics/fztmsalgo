@@ -445,8 +445,48 @@
 				"	a.Lat,\n" +
 				"	q.Customer_priority,\n" +
 				"	a.Service_time,\n" +
-				"	a.deliv_start,\n" +
-				"	a.deliv_end,\n" +
+				"	CONVERT(VARCHAR(5),(CASE\n" +
+				"		WHEN DATEDIFF(\n" +
+				"			HOUR,\n" +
+				"			CAST(\n" +
+				"				a.deliv_start AS TIME\n" +
+				"			),\n" +
+				"			CAST(\n" +
+				"				'12:00' AS TIME\n" +
+				"			)\n" +
+				"		)< 1 THEN DATEADD(\n" +
+				"			HOUR,\n" +
+				"			- 1,\n" +
+				"			CAST(\n" +
+				"				a.deliv_start AS TIME\n" +
+				"			)\n" +
+				"		)\n" +
+				"		ELSE CAST(\n" +
+				"			a.deliv_start AS TIME\n" +
+				"		)\n" +
+				"	END ),\n" +
+				"	108 ) as deliv_start,\n" +
+				"	CONVERT(VARCHAR(5),(CASE\n" +
+				"		WHEN DATEDIFF(\n" +
+				"			HOUR,\n" +
+				"			CAST(\n" +
+				"				a.deliv_end AS TIME\n" +
+				"			),\n" +
+				"			CAST(\n" +
+				"				'12:00' AS TIME\n" +
+				"			)\n" +
+				"		)< 1 THEN DATEADD(\n" +
+				"			HOUR,\n" +
+				"			- 1,\n" +
+				"			CAST(\n" +
+				"				a.deliv_end AS TIME\n" +
+				"			)\n" +
+				"		)\n" +
+				"		ELSE CAST(\n" +
+				"			a.deliv_end AS TIME\n" +
+				"		)\n" +
+				"	END ),\n" +
+				"	108 ) as deliv_end,\n" +
 				"	a.vehicle_type_list,\n" +
 				"	sum( a.total_kg ) total_kg,\n" +
 				"	sum( a.total_cubication ) total_cubication,\n" +
@@ -613,8 +653,8 @@
                 "	a.RunId = '"+RunId+"'\n" +
                 "	and a.branch = '"+branchCode+"'\n" +
                 "	and a.isActive = '1'\n" +
-		"	and a.IdDriver is not null\n" +
-		"	and a.NamaDriver is not null\n";
+				"	and a.IdDriver is not null\n" +
+				"	and a.NamaDriver is not null\n";
 				
 		System.out.println("sql " + sql);
 
@@ -1010,7 +1050,7 @@
             htCon.setRequestMethod("GET");
             htCon.setRequestProperty("User-Agent", "Mozilla/5.0");
             String resultJson = "";
-			System.out.println(finalURL);
+			System.out.println("finalURL : " + finalURL);
             try (BufferedReader in = new BufferedReader(
                     new InputStreamReader(htCon.getInputStream()))){
                 String inputLine;
@@ -1020,6 +1060,7 @@
                 }
                 in.close();
                 resultJson = response.toString();
+				System.out.println("resultJson : " + resultJson);
             }
             cx.log(resultJson);
 
