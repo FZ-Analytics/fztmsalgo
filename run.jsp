@@ -25,6 +25,7 @@
 
 	Double firstPriority = new Double(0);
     Double secondPriority = new Double(0);
+	Double defaultDistance = new Double(0);
 	int maxDestInAPI = 0;
 	
     public String run(HttpServletRequest request, HttpServletResponse response
@@ -159,13 +160,16 @@
         String sql = "SELECT\n" +
                 "	pa.value,\n" +
                 "	ps.value,\n" +
-				"	pd.value\n" +
+				"	pd.value,\n" +
+				"	pf.value\n" +
                 "FROM\n" +
                 "	BOSNET1.dbo.TMS_Params pa\n" +
                 "LEFT OUTER JOIN BOSNET1.dbo.TMS_Params ps ON\n" +
                 "	ps.param = 'secondPriorityUnassignedPenalty'\n" +
 				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Params pd ON\n" +
                 "	pd.param = 'maxDestInAPI'\n" +
+				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Params pf ON\n" +
+                "	pf.param = 'DefaultDistance'\n" +
                 "WHERE\n" +
                 "	pa.param = 'firstPriorityUnassignedPenalty';";
 				System.out.println(sql);
@@ -178,6 +182,7 @@
                     firstPriority = Double.parseDouble(FZUtil.getRsString(rs, i++, ""));
                     secondPriority = Double.parseDouble(FZUtil.getRsString(rs, i++, ""));
 					maxDestInAPI = Integer.parseInt(FZUtil.getRsString(rs, i++, ""));
+					defaultDistance = Double.parseDouble(FZUtil.getRsString(rs, i++, ""));
                 }
             }
             //System.out.println(firstPriority * secondPriority);
