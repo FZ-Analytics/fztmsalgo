@@ -45,9 +45,11 @@
         try {
 			System.out.println("run");
 
-			getParams();
+			
             // get runID param
             String runID = FZVrpUtil.getHttpParam(request, "runID");
+			
+			getParams(runID);
 
             FZAlgoContext cx = new FZAlgoContext();
             cx.runID = runID;
@@ -131,7 +133,7 @@
                 cx.log("Contruct Algo Context");
 
                 // reach here means db read OK
-                cx.params = readParams(con);
+                cx.params = readParams(con, runID);
 
                 cx.custDeliveries = readCustDeliveries(
                         runID, branchCode, dateDeliv, shift, con, cx);
@@ -623,7 +625,7 @@
         return finalCostDists;
     }
 	
-	public void getParams() throws Exception{
+	public void getParams(String runID) throws Exception{
         String sql = "SELECT\n" +
                 "	pa.value,\n" +
                 "	ps.value,\n" +
@@ -632,19 +634,27 @@
 				"	pg.value,\n" +
 				"	ph.value\n" +
                 "FROM\n" +
-                "	BOSNET1.dbo.TMS_Params pa\n" +
-                "LEFT OUTER JOIN BOSNET1.dbo.TMS_Params ps ON\n" +
+                "	BOSNET1.dbo.TMS_PreRouteParams pa\n" +
+				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Progress pj on" +
+				"	pj.RunId = pa.RunId\n" +
+                "LEFT OUTER JOIN BOSNET1.dbo.TMS_PreRouteParams ps ON\n" +
                 "	ps.param = 'secondPriorityUnassignedPenalty'\n" +
-				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Params pd ON\n" +
+				"	and ps.RunId = pj.RunId\n" +
+				"LEFT OUTER JOIN BOSNET1.dbo.TMS_PreRouteParams pd ON\n" +
                 "	pd.param = 'maxDestInAPI'\n" +
-				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Params pf ON\n" +
+				"	and pd.RunId = pj.RunId\n" +
+				"LEFT OUTER JOIN BOSNET1.dbo.TMS_PreRouteParams pf ON\n" +
                 "	pf.param = 'DefaultDistance'\n" +
-				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Params pg ON\n" +
+				"	and pf.RunId = pj.RunId\n" +
+				"LEFT OUTER JOIN BOSNET1.dbo.TMS_PreRouteParams pg ON\n" +
                 "	pg.param = 'fridayBreak'\n" +
-				"LEFT OUTER JOIN BOSNET1.dbo.TMS_Params ph ON\n" +
+				"	and pg.RunId = pj.RunId\n" +
+				"LEFT OUTER JOIN BOSNET1.dbo.TMS_PreRouteParams ph ON\n" +
                 "	ph.param = 'defaultBreak'\n" +
+				"	and ph.RunId = pj.RunId\n" +
                 "WHERE\n" +
-                "	pa.param = 'firstPriorityUnassignedPenalty';";
+                "	pa.param = 'firstPriorityUnassignedPenalty'\n" +
+				"	and pa.RunId = '"+runID+"';";
 				System.out.println(sql);
         try (Connection con = (new Db()).getConnection("jdbc/fztms");
                 PreparedStatement ps = con.prepareStatement(sql)){
@@ -932,9 +942,10 @@
         }
     }
 
-    private FZParams readParams(Connection con) throws Exception {
+    private FZParams readParams(Connection con, String runID) throws Exception {
         FZParams params = new FZParams();
-        String sql = "select param, value from bosnet1.dbo.TMS_Params";
+        String sql = "select param, value from bosnet1.dbo.TMS_PreRouteParams where RunId = (SELECT distinct OriRunId FROM BOSNET1.dbo.TMS_Progress where runID = '"+runID+"')";
+		System.out.println(sql);
         try (PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()){
             while (rs.next()){
